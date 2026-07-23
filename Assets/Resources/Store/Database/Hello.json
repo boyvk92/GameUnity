@@ -1,0 +1,24 @@
+﻿{
+    "DatabaseName": "Database",
+    "TableName": "Hello",
+    "Columns": [
+        {
+            "Name": "Id",
+            "Description": "",
+            "Type": 0
+        },
+        {
+            "Name": "name",
+            "Description": "mô tả",
+            "Type": 0
+        }
+    ],
+    "Rows": [
+        {
+            "Values": [
+                "1",
+                "name"
+            ]
+        }
+    ]
+}
