@@ -7,3 +7,11 @@ public class CultivationType {
         realm = _realm;
     }
 }
+
+
+public class TrainType {
+    public int timeUse;
+    public int enginerUse;
+
+    public CharactorAttributeType attribute;
+}

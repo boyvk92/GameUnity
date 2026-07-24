@@ -6,6 +6,7 @@ public class DongPhuScene : MonoBehaviour
     public TextMeshProUGUI timeText;
 
     public GameObject luyenKhiPopupPrefab;
+    public GameObject trainPopupPrefab;
     public Transform popupRoot;
     LuyenKhi luyenKhiPopup;
 
@@ -37,14 +38,11 @@ public class DongPhuScene : MonoBehaviour
     }
 
     public void OnShowDongPhu(){
-        if(luyenKhiPopup != null){
-            luyenKhiPopup.gameObject.SetActive(true);
-            luyenKhiPopup.Open();
-            return;
-        }
+        UIManager.Instance.Open(luyenKhiPopupPrefab);
+    }
 
-        luyenKhiPopup = Instantiate(luyenKhiPopupPrefab, popupRoot).GetComponent<LuyenKhi>();
-        luyenKhiPopup.Open();
+    public void OnShowTrain(){
+        UIManager.Instance.Open(trainPopupPrefab);
     }
 
 

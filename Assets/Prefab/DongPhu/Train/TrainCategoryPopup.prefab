@@ -612,6 +612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfbb1b5377c884f95b7261236d73cf9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainCategoryItem
+  trainCategory: {fileID: 0}
 --- !u!1 &2191745157887039524
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +895,7 @@ GameObject:
   - component: {fileID: 2657129216098289546}
   - component: {fileID: 7633411149657581654}
   m_Layer: 5
-  m_Name: Image
+  m_Name: popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1541,6 +1542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfbb1b5377c884f95b7261236d73cf9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainCategoryItem
+  trainCategory: {fileID: 5640602064204894631}
 --- !u!1 &6375191169575008972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1552,6 +1554,7 @@ GameObject:
   - component: {fileID: 3462808151024284974}
   - component: {fileID: 6826849619996732234}
   - component: {fileID: 5640602064204894631}
+  - component: {fileID: 1161315210900949413}
   m_Layer: 5
   m_Name: TrainCategoryPopup
   m_TagString: Untagged
@@ -1571,15 +1574,15 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1670201943659856235}
   - {fileID: 1969865256473935569}
+  - {fileID: 1670201943659856235}
   - {fileID: 6085279502917015186}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6826849619996732234
 MonoBehaviour:
@@ -1606,6 +1609,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainCategory
   btn_close: {fileID: 2955323909661378884}
+  trainList: {fileID: 6375191169575008972, guid: 92366599b63684c0bb8f2ee003368336, type: 3}
+--- !u!114 &1161315210900949413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6375191169575008972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 633d2c22017742ca90aa06185fdcf7c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PopupLayer
 --- !u!1 &6732396865377230841
 GameObject:
   m_ObjectHideFlags: 0

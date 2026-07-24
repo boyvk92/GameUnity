@@ -8,11 +8,13 @@ public class PlayerBar : MonoBehaviour
     void Start()
     {
         GameManager.Instance.addEventCallback("time", this, _ => OnEventTime());
+        GameManager.Instance.addEventCallback("energy", this, _ => OnEventEnergy());
     }
 
     void OnDestroy()
     {
         GameManager.Instance.removeEventCallback("time", this);
+         GameManager.Instance.removeEventCallback("energy", this);
     }
 
     // Update is called once per frame
@@ -31,4 +33,16 @@ public class PlayerBar : MonoBehaviour
         int getMaxTime = GameManager.Instance.getTimeManager().getTimeFullWeek();
         timeBar.setProgress(currentTime,getMaxTime);
     }
+    public void OnEventEnergy()
+    {
+        if(timeBar == null){
+            return;
+        }
+
+        int currentEnergy = GameManager.Instance.getEnergyManager().getEnergyWeed();
+        int getMaxEnergy = GameManager.Instance.getEnergyManager().getEnergyMax();
+        engineerBar.setProgress(currentEnergy,getMaxEnergy);
+    }
+
+    
 }

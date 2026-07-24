@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class TrainCategory : BasePopup
 {
+    public GameObject trainList;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,7 +16,13 @@ public class TrainCategory : BasePopup
         
     }
 
-    void OnClose(){
-        
+    void Close(){
+        UIManager.Instance.CloseTop();
     }
+
+    public void OnShowList(){
+        Debug.Log("OnShowList");
+        UIManager.Instance.Open(trainList);
+    }
+
 }

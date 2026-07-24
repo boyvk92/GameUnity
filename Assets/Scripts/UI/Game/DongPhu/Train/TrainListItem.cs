@@ -1,14 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class TrainListItem : MonoBehaviour
+public class TrainListItem : MonoBehaviour, IPointerClickHandler
 {
     public Image icon;
     public ProgressBar levelProgress;
     public ProgressBar trainProgress;
     public TextMeshProUGUI title;
     public string id;
+
+    public TrainList trainList;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -39,7 +42,12 @@ public class TrainListItem : MonoBehaviour
        // SetupClickEvents();
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        OnShowDetail();
+    }
+
     public void OnShowDetail(){
-        
+        trainList.OnShowDetail();
     }
 }

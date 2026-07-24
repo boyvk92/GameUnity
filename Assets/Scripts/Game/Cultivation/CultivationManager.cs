@@ -17,4 +17,17 @@ public class CultivationManager{
 
         return new CultivationType(timeUse, linhKhi * linhCan * cultivationSpeed * congphap);
     }
+
+    public TrainType TrainCalculator(){
+        // tính toán
+        TrainType trainType = new TrainType();
+
+        trainType.timeUse = 80;
+        trainType.enginerUse = 20;
+
+        trainType.attribute.strength = 10;
+
+
+        return trainType;
+    }
 }

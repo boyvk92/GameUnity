@@ -539,7 +539,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 222819899}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1757006365}
+        m_TargetAssemblyTypeName: DongPhuScene, Assembly-CSharp
+        m_MethodName: OnShowTrain
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &222819899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4039,6 +4051,7 @@ GameObject:
   - component: {fileID: 1757006362}
   - component: {fileID: 1757006361}
   - component: {fileID: 1757006365}
+  - component: {fileID: 1757006366}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -4147,7 +4160,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
   timeText: {fileID: 526362454}
   luyenKhiPopupPrefab: {fileID: 5115636857499308169, guid: d84ae923b038742c8a6568d2f0554300, type: 3}
+  trainPopupPrefab: {fileID: 6375191169575008972, guid: 746e3c73a506b46c489ac90e8c334c76, type: 3}
   popupRoot: {fileID: 2011307324}
+--- !u!114 &1757006366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1757006360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de3e5bc360dfd42088a75b6a57276edc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  popupRoot: {fileID: 2011307324}
+  hudRoot: {fileID: 0}
+  toastRoot: {fileID: 0}
 --- !u!1 &1825600113
 GameObject:
   m_ObjectHideFlags: 0

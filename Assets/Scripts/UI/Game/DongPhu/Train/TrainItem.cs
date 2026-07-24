@@ -18,7 +18,21 @@ public class TrainItem : BasePopup
     }
 
     void OnTrain(){
-        
+        int timeConLai = GameManager.Instance.getTimeManager().getTimeWeek();
+        int engine = GameManager.Instance.getTimeManager().getTimeWeek();
+
+        CultivationManager cultivationManager = new CultivationManager();
+        CultivationType cultivation = cultivationManager.TrainCalculator();
+
+         if(timeConLai < cultivation.timeUse && engine < cultivation.enginerUse){
+            OnStop();
+            return;
+        }else{
+            GameManager.Instance.useTimeWeek(cultivation.timeUse);
+        }
+
+
+
     }
 
     public void OnStart(){

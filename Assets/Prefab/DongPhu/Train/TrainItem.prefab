@@ -1378,6 +1378,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainList
   btn_close: {fileID: 2955323909661378884}
+  detailPopup: {fileID: 0}
 --- !u!1 &6835868980876114901
 GameObject:
   m_ObjectHideFlags: 0

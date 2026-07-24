@@ -7,12 +7,17 @@ public class GameManager {
     private static GameManager instance;
 
     private CharactorStats charactor;
+
     private TimeManager timeManager;
+    private EnergyManager energyManager;
+
+
     private EventCallBackManager eventCallback;
 
     private GameManager(CharactorStats _charactor){
         this.charactor = _charactor;
         this.timeManager = new TimeManager();
+        this.enginerManager = new EnginerManager();
         eventCallback = new EventCallBackManager();
     }
 
@@ -37,6 +42,12 @@ public class GameManager {
     public TimeManager getTimeManager(){
         return timeManager;
     }
+
+    public TimeManager getEnergyManager(){
+        return energyManager;
+    }
+
+    
 
     public void setCharactorStats(CharactorStats _charactor){
         charactor = _charactor;

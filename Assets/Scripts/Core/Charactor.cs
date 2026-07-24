@@ -6,28 +6,10 @@ public class BaseStats {
     public int Exp;
     public int MaxExp;
 
-    public int Attack;
-    public int Def;
-    public int Speed;
-    public int Evasion;
-    public int HP;
-    public int MP;
-
     public int Gold;
 
     public BaseStats() { 
-        Level = 1;
-        Exp = 0;
-        MaxExp = 100;
 
-        Attack = 10;
-        Def = 10;
-        Speed = 10;
-        Evasion = 10;
-        HP = 100;
-        MP = 100;
-
-        Gold = 0;
     }
 }
 
@@ -51,10 +33,14 @@ public class GenerationStats {
 }
 
 public class CharactorStats {
+
+    public static CharactorStats Current;
+
     public BaseStats baseStats;
+    public CharactorAttributesTyle attributes;
     public GenerationStats generationStats;
     public DerivedStats derivedStats;
-    public static CharactorStats Current;
+    
     public Cultivation Cultivation = new();
 }
 

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class TrainCategoryItem : MonoBehaviour
 {
+    public TrainCategory trainCategory;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,6 +16,6 @@ public class TrainCategoryItem : MonoBehaviour
     }
 
     public void OnShowList(){
-        
+        trainCategory.OnShowList();
     }
 }
