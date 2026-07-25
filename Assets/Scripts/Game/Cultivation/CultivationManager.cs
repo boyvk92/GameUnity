@@ -23,9 +23,10 @@ public class CultivationManager{
         TrainType trainType = new TrainType();
 
         trainType.timeUse = 80;
-        trainType.enginerUse = 20;
+        trainType.energyUse = 10;
 
-        trainType.attribute.strength = 10;
+        trainType.attribute =  new CharactorAttributesType();
+        trainType.attribute.Strength = 10;
 
 
         return trainType;

@@ -1,40 +1,40 @@
 
 
 public class EnergyManager{
-    private int energyWeed = 0;
-    private int energyWeedMax = 0;
-    private int energyWeedNext = 0;
+    private int energyWeek = 0;
+    private int energyWeekMax = 0;
+    private int energyWeekNext = 0;
 
-    public EnergyManager(int _energyWeed, int _energyWeedMax, int _energyWeedNext){
-        this.energyWeed = _energyWeed;
-        this.energyWeedMax = _energyWeedMax;
-        this.energyWeedNext = _energyWeedNext;
+    public EnergyManager(int? _energyWeek, int? _energyWeekMax, int? _energyWeekNext){
+        this.energyWeek = _energyWeek ?? 100;
+        this.energyWeekMax = _energyWeekMax ?? 100;
+        this.energyWeekNext = _energyWeekNext ?? 100;
     }
 
 
-    public int getEnergyWeed(){
-        return this.energyWeed;
+    public int getEnergyWeek(){
+        return this.energyWeek;
     } 
 
-    public int getEnergyWeedMax(){
-        return this.energyWeedMax;
+    public int getEnergyWeekMax(){
+        return this.energyWeekMax;
     }
 
     public void nextWeek(){
-        this.energyWeedMax = this.energyWeedNext;
-        this.energyWeed = this.energyWeedMax;
+        this.energyWeekMax = this.energyWeekNext;
+        this.energyWeek = this.energyWeekMax;
     }
 
-    public bool useEnergy(int energy){
-        if(energy > this.energyWeed){
+    public bool useEnergyWeek(int energy){
+        if(energy > this.energyWeek){
             return false; 
         }
 
-        this.energyWeed -= energy;
+        this.energyWeek -= energy;
         return true;
     }
 
     public void energyNextUp(int energy){
-        this.energyWeedNext += energy;
+        this.energyWeekNext += energy;
     }
 }

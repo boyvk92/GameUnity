@@ -5,4 +5,6 @@ public class DataConfig
     public static string DatabaseAssetPath = "Assets/Scripts/Data/Database/Database.asset";
     public static string DatabaseFilePath = "Assets/Resources/Store/Database/Database.json";
     public static string DatabaseExportFolder = "Assets/Resources/Store/Database";
+    public static string SOExportFolder = "Assets/Scripts/Data/Database/ScriptableObjects";
+    public static string SOExportFileName = "SO_Skill_Export.asset";
 }

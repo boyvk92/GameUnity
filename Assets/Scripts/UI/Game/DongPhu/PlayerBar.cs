@@ -39,8 +39,8 @@ public class PlayerBar : MonoBehaviour
             return;
         }
 
-        int currentEnergy = GameManager.Instance.getEnergyManager().getEnergyWeed();
-        int getMaxEnergy = GameManager.Instance.getEnergyManager().getEnergyMax();
+        int currentEnergy = GameManager.Instance.getEnergyManager().getEnergyWeek();
+        int getMaxEnergy = GameManager.Instance.getEnergyManager().getEnergyWeekMax();
         engineerBar.setProgress(currentEnergy,getMaxEnergy);
     }
 

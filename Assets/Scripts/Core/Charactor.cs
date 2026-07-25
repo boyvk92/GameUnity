@@ -37,10 +37,22 @@ public class CharactorStats {
     public static CharactorStats Current;
 
     public BaseStats baseStats;
-    public CharactorAttributesTyle attributes;
+    public CharactorAttributesType attributes;
     public GenerationStats generationStats;
     public DerivedStats derivedStats;
     
-    public Cultivation Cultivation = new();
+    public Cultivation Cultivation;
+
+    public CharactorStats(){
+        baseStats = new BaseStats();
+        attributes = new CharactorAttributesType();
+        generationStats = new GenerationStats();
+        derivedStats = new DerivedStats();
+        Cultivation = new Cultivation();
+    }
+
+    public void AddStat(CharactorAttributesType _attributes){
+        attributes.AddStat(_attributes);
+    }
 }
 

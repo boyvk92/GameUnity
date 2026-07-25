@@ -17,7 +17,7 @@ public class GameManager {
     private GameManager(CharactorStats _charactor){
         this.charactor = _charactor;
         this.timeManager = new TimeManager();
-        this.enginerManager = new EnginerManager();
+        this.energyManager = new EnergyManager(1000, 1000, 1000);
         eventCallback = new EventCallBackManager();
     }
 
@@ -43,15 +43,20 @@ public class GameManager {
         return timeManager;
     }
 
-    public TimeManager getEnergyManager(){
+    public EnergyManager getEnergyManager(){
         return energyManager;
     }
 
     
 
     public void setCharactorStats(CharactorStats _charactor){
-        charactor = _charactor;
+        this.charactor = _charactor;
     }
+    public void updateStatCharacter(CharactorAttributesType _attributes){
+        this.charactor.AddStat(_attributes);
+        eventCallback.trigger("stat");
+    }
+    ///
 
     // time manager
     public void newWeek(){
@@ -61,6 +66,10 @@ public class GameManager {
     public void useTimeWeek(int timeUse){
         timeManager.useTimeWeek(timeUse);
         eventCallback.trigger("time");
+    }
+    public void useEnergyWeek(int timeUse){
+        energyManager.useEnergyWeek(timeUse);
+        eventCallback.trigger("energy");
     }
 
 

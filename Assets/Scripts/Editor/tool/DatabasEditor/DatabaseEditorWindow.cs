@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class DatabaseEditorWindow : EditorWindow
@@ -12,6 +13,10 @@ public class DatabaseEditorWindow : EditorWindow
     private Vector2 tableScroll;
     private Vector2 detailScroll;
     private Vector2 rowsScroll;
+    private ReorderableList rowsList;
+    private DatabaseTableData rowsListTable;
+    private float[] rowsListColumnWidths;
+    private int rowsListColumnCount = -1;
 
     [MenuItem("Tools/Database Editor")]
     public static void Open()
@@ -86,6 +91,12 @@ public class DatabaseEditorWindow : EditorWindow
             if (GUILayout.Button("Export JSON", EditorStyles.toolbarButton, GUILayout.Width(90)))
             {
                 ExportJson();
+                GUIUtility.ExitGUI();
+            }
+
+            if (GUILayout.Button("Export SO", EditorStyles.toolbarButton, GUILayout.Width(80)))
+            {
+                SOExport.Open();
                 GUIUtility.ExitGUI();
             }
         }
@@ -249,14 +260,8 @@ public class DatabaseEditorWindow : EditorWindow
 
         rowsScroll = EditorGUILayout.BeginScrollView(rowsScroll, GUI.skin.box, GUILayout.Height(260));
         DrawDataHeader(table, columnWidths);
-
-        for (int rowIndex = 0; rowIndex < table.Rows.Count; rowIndex++)
-        {
-            DatabaseRowData row = table.Rows[rowIndex];
-            EnsureRowSize(table, row);
-            DrawDataRow(table, row, rowIndex, columnWidths);
-        }
-
+        ReorderableList list = GetRowsList(table, columnWidths);
+        list.DoLayoutList();
         EditorGUILayout.EndScrollView();
     }
 
@@ -266,6 +271,7 @@ public class DatabaseEditorWindow : EditorWindow
         headerBarStyle.padding = new RectOffset(6, 6, 8, 8);
 
         EditorGUILayout.BeginHorizontal(headerBarStyle, GUILayout.Height(40));
+        GUILayout.Label("", GUILayout.Width(18));
         GUILayout.Label("#", GUILayout.Width(36));
 
         for (int columnIndex = 0; columnIndex < table.Columns.Count; columnIndex++)
@@ -289,27 +295,60 @@ public class DatabaseEditorWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
     }
 
-    private void DrawDataRow(DatabaseTableData table, DatabaseRowData row, int rowIndex, float[] columnWidths)
+    private ReorderableList GetRowsList(DatabaseTableData table, float[] columnWidths)
     {
-        EditorGUILayout.BeginHorizontal(GUI.skin.box);
-        GUILayout.Label((rowIndex + 1).ToString(), GUILayout.Width(36));
+        rowsListColumnWidths = columnWidths;
 
-        for (int columnIndex = 0; columnIndex < table.Columns.Count; columnIndex++)
+        if (rowsList != null && rowsListTable == table && rowsListColumnCount == columnWidths.Length)
         {
-            DatabaseColumnDefinition column = table.Columns[columnIndex];
-            row.Values[columnIndex] = DrawCellField(table, rowIndex, columnIndex, column, row.Values[columnIndex], column.Type, columnWidths[columnIndex]);
+            return rowsList;
         }
 
-        if (GUILayout.Button("Remove", GUILayout.Width(70)))
+        rowsListTable = table;
+        rowsListColumnCount = columnWidths.Length;
+        rowsList = new ReorderableList(table.Rows, typeof(DatabaseRowData), true, false, false, false);
+        rowsList.elementHeight = EditorGUIUtility.singleLineHeight + 8f;
+        rowsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
         {
-            if (EditorUtility.DisplayDialog("Confirm Delete", $"Delete row {rowIndex + 1}?", "Delete", "Cancel"))
+            DatabaseRowData row = table.Rows[index];
+            EnsureRowSize(table, row);
+
+            rect.y += 2f;
+            rect.height = EditorGUIUtility.singleLineHeight;
+
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, rect.height), isActive ? new Color(0.3f, 0.5f, 0.9f, 0.12f) : new Color(0f, 0f, 0f, 0.05f));
+
+            float x = rect.x + 4f;
+
+            Rect handleRect = new Rect(x, rect.y, 18f, rect.height);
+            GUI.Label(handleRect, "||");
+            x += 22f;
+
+            Rect indexRect = new Rect(x, rect.y, 36f, rect.height);
+            GUI.Label(indexRect, (index + 1).ToString());
+            x += 40f;
+
+            for (int columnIndex = 0; columnIndex < table.Columns.Count; columnIndex++)
             {
-                table.Rows.RemoveAt(rowIndex);
-                GUIUtility.ExitGUI();
+                DatabaseColumnDefinition column = table.Columns[columnIndex];
+                float width = rowsListColumnWidths[columnIndex];
+                Rect cellRect = new Rect(x, rect.y, width, rect.height);
+                row.Values[columnIndex] = DrawCellField(table, index, columnIndex, column, row.Values[columnIndex], column.Type, cellRect);
+                x += width + 4f;
             }
-        }
 
-        EditorGUILayout.EndHorizontal();
+            Rect removeRect = new Rect(x, rect.y, 70f, rect.height);
+            if (GUI.Button(removeRect, "Remove"))
+            {
+                if (EditorUtility.DisplayDialog("Confirm Delete", $"Delete row {index + 1}?", "Delete", "Cancel"))
+                {
+                    table.Rows.RemoveAt(index);
+                    GUIUtility.ExitGUI();
+                }
+            }
+        };
+        rowsList.onReorderCallback = _ => MarkDatabaseDirty();
+        return rowsList;
     }
 
     private float[] BuildColumnWidths(DatabaseTableData table)
@@ -323,7 +362,7 @@ public class DatabaseEditorWindow : EditorWindow
         return widths;
     }
 
-    private string DrawCellField(DatabaseTableData currentTable, int rowIndex, int columnIndex, DatabaseColumnDefinition column, string value, DatabaseColumnType type, float width)
+    private string DrawCellField(DatabaseTableData currentTable, int rowIndex, int columnIndex, DatabaseColumnDefinition column, string value, DatabaseColumnType type, Rect rect)
     {
         switch (type)
         {
@@ -333,7 +372,7 @@ public class DatabaseEditorWindow : EditorWindow
                 {
                     intValue = 0;
                 }
-                intValue = EditorGUILayout.IntField(string.Empty, intValue, GUILayout.Width(width));
+                intValue = EditorGUI.IntField(rect, intValue);
                 return intValue.ToString();
             case DatabaseColumnType.Float:
                 float floatValue;
@@ -341,7 +380,7 @@ public class DatabaseEditorWindow : EditorWindow
                 {
                     floatValue = 0f;
                 }
-                floatValue = EditorGUILayout.FloatField(string.Empty, floatValue, GUILayout.Width(width));
+                floatValue = EditorGUI.FloatField(rect, floatValue);
                 return floatValue.ToString();
             case DatabaseColumnType.Bool:
                 bool boolValue;
@@ -349,12 +388,12 @@ public class DatabaseEditorWindow : EditorWindow
                 {
                     boolValue = false;
                 }
-                boolValue = EditorGUILayout.Toggle(string.Empty, boolValue, GUILayout.Width(width));
+                boolValue = EditorGUI.Toggle(rect, boolValue);
                 return boolValue.ToString();
             case DatabaseColumnType.Table:
-                return DrawTableReferenceField(currentTable, rowIndex, columnIndex, column, value, width);
+                return DrawTableReferenceField(currentTable, rowIndex, columnIndex, column, value, rect);
             default:
-                return EditorGUILayout.TextField(string.Empty, value, GUILayout.Width(width));
+                return EditorGUI.TextField(rect, value);
         }
     }
 
@@ -383,12 +422,12 @@ public class DatabaseEditorWindow : EditorWindow
         }
     }
 
-    private string DrawTableReferenceField(DatabaseTableData currentTable, int rowIndex, int columnIndex, DatabaseColumnDefinition column, string value, float width)
+    private string DrawTableReferenceField(DatabaseTableData currentTable, int rowIndex, int columnIndex, DatabaseColumnDefinition column, string value, Rect rect)
     {
         DatabaseTableData referenceTable = GetTableByName(column.ReferenceTableName);
         if (referenceTable == null)
         {
-            return EditorGUILayout.TextField("Missing Table", value, GUILayout.Width(width));
+            return EditorGUI.TextField(rect, value);
         }
 
         int primaryKeyIndex = GetColumnIndexByRole(referenceTable, DatabaseColumnRole.PrimaryKey);
@@ -396,12 +435,12 @@ public class DatabaseEditorWindow : EditorWindow
 
         if (primaryKeyIndex < 0 || labelIndex < 0)
         {
-            EditorGUILayout.LabelField("Need PK + Label", GUILayout.Width(width));
+            GUI.Label(rect, "Need PK + Label");
             return value;
         }
 
         string displayLabel = GetReferenceDisplayLabel(referenceTable, primaryKeyIndex, labelIndex, value);
-        Rect buttonRect = GUILayoutUtility.GetRect(new GUIContent(displayLabel), GUI.skin.button, GUILayout.Width(width), GUILayout.Height(EditorGUIUtility.singleLineHeight + 4f));
+        Rect buttonRect = rect;
 
         if (GUI.Button(buttonRect, displayLabel, GUI.skin.button))
         {

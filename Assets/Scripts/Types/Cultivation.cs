@@ -11,7 +11,7 @@ public class CultivationType {
 
 public class TrainType {
     public int timeUse;
-    public int enginerUse;
+    public int energyUse;
 
-    public CharactorAttributeType attribute;
+    public CharactorAttributesType attribute;
 }

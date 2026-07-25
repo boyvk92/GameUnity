@@ -93,7 +93,7 @@
             "Columns": [
                 {
                     "Name": "id",
-                    "Description": "",
+                    "Description": "enum",
                     "Type": 0,
                     "Role": 1,
                     "ReferenceTableName": ""
@@ -109,20 +109,111 @@
             "Rows": [
                 {
                     "Values": [
-                        "1",
+                        "Physical",
                         "Thể chất"
                     ]
                 },
                 {
                     "Values": [
-                        "2",
+                        "Combat",
                         "Chiến đấu"
                     ]
                 },
                 {
                     "Values": [
-                        "3",
+                        "Life",
                         "Kỹ năng sống"
+                    ]
+                }
+            ]
+        },
+        {
+            "TableName": "StatTypeStatType",
+            "Columns": [
+                {
+                    "Name": "id",
+                    "Description": "eNum",
+                    "Type": 0,
+                    "Role": 1,
+                    "ReferenceTableName": ""
+                },
+                {
+                    "Name": "description",
+                    "Description": "",
+                    "Type": 0,
+                    "Role": 2,
+                    "ReferenceTableName": ""
+                },
+                {
+                    "Name": "StatType",
+                    "Description": "",
+                    "Type": 4,
+                    "Role": 0,
+                    "ReferenceTableName": "Skill_Type"
+                }
+            ],
+            "Rows": [
+                {
+                    "Values": [
+                        "MaxHealth",
+                        "Máu tối đa",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "MaxMana",
+                        "Thể lực tối đa",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "Strength",
+                        "Sức mạnh",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "Dexterity",
+                        "Khéo léo",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "Intelligence",
+                        "Trí tuệ",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "Vitality",
+                        "Thể Lực",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "MoveSpeed",
+                        "Tốc đọ di chuyển",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "EvasionChance",
+                        "Tỷ lệ né tránh",
+                        "Physical"
+                    ]
+                },
+                {
+                    "Values": [
+                        "AttackPower",
+                        "Sức tấn công chungSức tấn công chung",
+                        "Combat"
                     ]
                 }
             ]
@@ -134,30 +225,105 @@
                     "Name": "id",
                     "Description": "",
                     "Type": 0,
-                    "Role": 0,
+                    "Role": 1,
                     "ReferenceTableName": ""
                 },
                 {
-                    "Name": "name",
+                    "Name": "Name",
                     "Description": "",
                     "Type": 0,
-                    "Role": 0,
+                    "Role": 2,
                     "ReferenceTableName": ""
                 },
                 {
-                    "Name": "type",
+                    "Name": "Type",
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
                     "ReferenceTableName": "Skill_Type"
+                },
+                {
+                    "Name": "Icon",
+                    "Description": "",
+                    "Type": 0,
+                    "Role": 0,
+                    "ReferenceTableName": ""
                 }
             ],
             "Rows": [
                 {
                     "Values": [
                         "1",
-                        "Thanh vân quyết",
+                        "Tấn công lv1",
+                        "Physical",
+                        ""
+                    ]
+                }
+            ]
+        },
+        {
+            "TableName": "Skill_Bounus",
+            "Columns": [
+                {
+                    "Name": "ID",
+                    "Description": "",
+                    "Type": 4,
+                    "Role": 0,
+                    "ReferenceTableName": "Skill"
+                },
+                {
+                    "Name": "Type",
+                    "Description": "",
+                    "Type": 4,
+                    "Role": 0,
+                    "ReferenceTableName": "StatTypeStatType"
+                },
+                {
+                    "Name": "Value",
+                    "Description": "",
+                    "Type": 0,
+                    "Role": 1,
+                    "ReferenceTableName": ""
+                },
+                {
+                    "Name": "Level",
+                    "Description": "",
+                    "Type": 0,
+                    "Role": 0,
+                    "ReferenceTableName": ""
+                }
+            ],
+            "Rows": [
+                {
+                    "Values": [
+                        "1",
+                        "MaxMana",
+                        "10",
                         "1"
+                    ]
+                },
+                {
+                    "Values": [
+                        "1",
+                        "Strength",
+                        "10",
+                        "1"
+                    ]
+                },
+                {
+                    "Values": [
+                        "1",
+                        "MaxMana",
+                        "12",
+                        "2"
+                    ]
+                },
+                {
+                    "Values": [
+                        "1",
+                        "MaxHealth",
+                        "12",
+                        "2"
                     ]
                 }
             ]

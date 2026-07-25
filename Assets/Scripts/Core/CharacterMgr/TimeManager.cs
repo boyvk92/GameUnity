@@ -5,7 +5,8 @@ public class TypeTimeGame{
     public int month;
     public int year;
 
-    public TypeTimeGame(int _week, int _month, int _year){
+
+    public TypeTimeGame(int? _week, int? _month, int? _year){
         this.week = _week ?? 100;
         this.month = _month ?? 100;
         this.year = _year ?? 100;
