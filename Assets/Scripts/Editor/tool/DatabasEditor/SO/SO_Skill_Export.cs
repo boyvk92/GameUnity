@@ -9,13 +9,19 @@ using UnityEngine;
 [Serializable]
 public class SkillLevel
 {
+    public string id;
+    public string Skill_Id;
     public int train;
+    public int level;
+    public string label;
+    
     public List<SkillBookBonus> bounus = new List<SkillBookBonus>();
 }
 
 [Serializable]
 public class SkillBookBonus
 {
+    public string Level_ID;
     public string Type;
     public int Value;
 }
@@ -28,7 +34,7 @@ public class SkillBookData
     public string Type;
     public string Icon;
 
-    public List<SkillBookBonus> bounus = new List<SkillBookBonus>();
+    public List<SkillLevel> levels = new List<SkillLevel>();
 }
 
 [Serializable]
@@ -44,12 +50,7 @@ public class SO_Skill_Export : ScriptableObject
     public List<DatabaseColumnDefinition> Columns = new List<DatabaseColumnDefinition>();
     public List<SkillBookData> Skills = new List<SkillBookData>();
 
-    public void BuildFromTable(DatabaseTableData table)
-    {
-        BuildFromTables(table, null);
-    }
-
-    public void BuildFromTables(DatabaseTableData skillTable, DatabaseTableData skillBonusTable)
+    public void BuildFromTables(DatabaseTableData skillTable, DatabaseTableData skillLevelTable, DatabaseTableData skillBonusTable)
     {
         TableName = skillTable != null ? skillTable.TableName : string.Empty;
         Columns.Clear();
@@ -76,42 +77,84 @@ public class SO_Skill_Export : ScriptableObject
         for (int rowIndex = 0; rowIndex < skillTable.Rows.Count; rowIndex++)
         {
             DatabaseRowData row = skillTable.Rows[rowIndex];
-            SkillBookData skill = new SkillBookData();
-
-            for (int columnIndex = 0; columnIndex < skillTable.Columns.Count && columnIndex < row.Values.Count; columnIndex++)
-            {
-                string fieldName = skillTable.Columns[columnIndex].Name;
-                SetFieldValue(skill, fieldName, row.Values[columnIndex]);
-            }
-
+            SkillBookData skill = BuildFromRow<SkillBookData>(row);
+            skill.levels = GetSkillLevel(skill.id, skillLevelTable, skillBonusTable);
             Skills.Add(skill);
         }
+    }
 
-        if (skillBonusTable == null)
-        {
-            return;
+    List<SkillLevel> GetSkillLevel(string skillID, DatabaseTableData skillLevelTable, DatabaseTableData skillBonusTable) { 
+        if(skillID == null || skillLevelTable == null){
+            Debug.Log("skillID == null || skillLevelTable == null");
+            return new List<SkillLevel>();
         }
 
+        List<SkillLevel> levels = new List<SkillLevel>();
+
+       
+        
+        for (int rowIndex = 0; rowIndex < skillLevelTable.Rows.Count; rowIndex++)
+        {
+            DatabaseRowData row = skillLevelTable.Rows[rowIndex];
+            SkillLevel level = BuildFromRow<SkillLevel>(row);
+            FieldInfo[] levelFields = typeof(SkillLevel).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            for (int i = 0; i < levelFields.Length; i++)
+            {
+                object value = levelFields[i].GetValue(level);
+                Debug.Log("level." + levelFields[i].Name + " = " + (value != null ? value.ToString() : "null"));
+            }
+            
+            if(isEquals(skillID, level, "Skill_Id")){
+            level.bounus = GetSkillBounus(level.id, skillBonusTable);
+               levels.Add(level);
+            }
+        }
+        return levels;
+    }
+
+    List<SkillBookBonus> GetSkillBounus(string skillLevelId, DatabaseTableData skillBonusTable) { 
+        if(skillLevelId == null || skillBonusTable == null){return new List<SkillBookBonus>();}
+
+        List<SkillBookBonus> bonuses = new List<SkillBookBonus>();
+        
         for (int rowIndex = 0; rowIndex < skillBonusTable.Rows.Count; rowIndex++)
         {
             DatabaseRowData row = skillBonusTable.Rows[rowIndex];
-            string bonusSkillId = GetBonusSkillId(skillBonusTable, row);
-            SkillBookBonus bonus = BuildBonusFromRow(skillBonusTable, row);
-            if (bonus == null || string.IsNullOrEmpty(bonusSkillId))
-            {
-                continue;
-            }
-
-            for (int skillIndex = 0; skillIndex < Skills.Count; skillIndex++)
-            {
-                SkillBookData skill = Skills[skillIndex];
-                if (skill != null && string.Equals(NormalizeKey(skill.id), NormalizeKey(bonusSkillId), StringComparison.OrdinalIgnoreCase))
-                {
-                    skill.bounus.Add(bonus);
-                    break;
-                }
+            SkillBookBonus bonus = BuildFromRow<SkillBookBonus>(row);
+            if(isEquals(skillLevelId, bonus, "Level_ID")){
+               
+               bonuses.Add(bonus);
             }
         }
+        return bonuses;
+    }
+
+    private bool isEquals<T>(string id, T row, string key)
+    {
+        if (row == null)
+        {
+            return false;
+        }
+
+        FieldInfo field = typeof(T).GetField(key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+        if (field != null)
+        {
+            object value = field.GetValue(row);
+            string rowId = value as string;
+            return !string.IsNullOrEmpty(rowId) &&
+                   string.Equals(id, rowId, StringComparison.OrdinalIgnoreCase);
+        }
+
+        PropertyInfo property = typeof(T).GetProperty(key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+        if (property != null)
+        {
+            object value = property.GetValue(row, null);
+            string rowId = value as string;
+            return !string.IsNullOrEmpty(rowId) &&
+                   string.Equals(id, rowId, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
     }
 
     private SkillBookBonus BuildBonusFromRow(DatabaseTableData table, DatabaseRowData row)
@@ -129,6 +172,73 @@ public class SO_Skill_Export : ScriptableObject
         }
 
         return bonus;
+    }
+
+    private T BuildFromRow<T>(DatabaseRowData row) where T : new()
+    {
+        T result = new T();
+        if (row == null)
+        {
+            return result;
+        }
+
+        FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+        PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+        int valueCount = row.Values != null ? row.Values.Count : 0;
+        int fieldCount = fields != null ? fields.Length : 0;
+        int propertyCount = properties != null ? properties.Length : 0;
+        int count = valueCount;
+        if (fieldCount > 0 && count > fieldCount)
+        {
+            count = fieldCount;
+        }
+        if (propertyCount > 0 && count > propertyCount)
+        {
+            count = propertyCount;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            string value = row.Values[i];
+
+            if (i < fieldCount)
+            {
+                FieldInfo field = fields[i];
+                if (field.FieldType != typeof(string) &&
+                    field.FieldType != typeof(int) &&
+                    field.FieldType != typeof(float) &&
+                    field.FieldType != typeof(bool))
+                {
+                    continue;
+                }
+
+                object convertedValue = ConvertValue(value, field.FieldType);
+                field.SetValue(result, convertedValue);
+                continue;
+            }
+
+            int propertyIndex = i - fieldCount;
+            if (propertyIndex < propertyCount)
+            {
+                PropertyInfo property = properties[propertyIndex];
+                if (property.CanWrite)
+                {
+                    if (property.PropertyType != typeof(string) &&
+                        property.PropertyType != typeof(int) &&
+                        property.PropertyType != typeof(float) &&
+                        property.PropertyType != typeof(bool))
+                    {
+                        continue;
+                    }
+
+                    object convertedValue = ConvertValue(value, property.PropertyType);
+                    property.SetValue(result, convertedValue, null);
+                }
+            }
+        }
+
+        return result;
     }
 
     private string ResolveFieldName(string columnName, List<SkillColumnMapping> mappings)
@@ -149,22 +259,6 @@ public class SO_Skill_Export : ScriptableObject
         return columnName;
     }
 
-    private void SetFieldValue(SkillBookData skill, string fieldName, string value)
-    {
-        if (skill == null || string.IsNullOrEmpty(fieldName))
-        {
-            return;
-        }
-
-        FieldInfo field = typeof(SkillBookData).GetField(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-        if (field == null)
-        {
-            return;
-        }
-
-        object convertedValue = ConvertValue(value, field.FieldType);
-        field.SetValue(skill, convertedValue);
-    }
 
     private object ConvertValue(string value, Type type)
     {

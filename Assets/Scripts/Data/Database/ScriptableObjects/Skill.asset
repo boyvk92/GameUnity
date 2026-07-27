@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: d8257a45308154a2eb07393f722e78c5, type: 3}
   m_Name: Skill
   m_EditorClassIdentifier: Assembly-CSharp-Editor::SO_Skill_Export
   TableName: Skill
@@ -36,11 +36,37 @@ MonoBehaviour:
     ReferenceTableName: 
   Skills:
   - id: 1
-    Name: "T\u1EA5n c\xF4ng lv1"
+    Name: "T\u1EA5n c\xF4ng"
     Type: Physical
     Icon: 
-    bounus:
-    - Type: MaxMana
-      Value: 10
-    - Type: Strength
-      Value: 10
+    levels:
+    - id: 1
+      Skill_Id: 1
+      train: 99999
+      level: 100
+      label: "T\u1EA5n c\xF4ng lv1"
+      bounus:
+      - Level_ID: 1
+        Type: MaxMana
+        Value: 10
+      - Level_ID: 1
+        Type: Strength
+        Value: 10
+    - id: 2
+      Skill_Id: 1
+      train: 2
+      level: 1000
+      label: "T\u1EA5n c\xF4ng lv2"
+      bounus:
+      - Level_ID: 2
+        Type: MaxMana
+        Value: 12
+      - Level_ID: 2
+        Type: MaxHealth
+        Value: 12
+    - id: 3
+      Skill_Id: 1
+      train: 2
+      level: 1
+      label: "T\u1EA5n c\xF4ng lv3"
+      bounus: []

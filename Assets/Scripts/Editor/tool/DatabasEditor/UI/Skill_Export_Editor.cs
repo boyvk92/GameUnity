@@ -192,6 +192,13 @@ public class SOExport : EditorWindow
             return;
         }
 
+        DatabaseTableData skillLevelTable = GetSelectedSkillLevelTable();
+        if (skillLevelTable == null)
+        {
+            EditorUtility.DisplayDialog("SO Export", "Hay chon bang skillLevelTable de export.", "OK");
+            return;
+        }
+
         DatabaseTableData skillBonusTable = GetSelectedSkillBonusTable();
         if (skillBonusTable == null)
         {
@@ -215,7 +222,7 @@ public class SOExport : EditorWindow
 
         SO_Skill_Export exportAsset = CreateInstance<SO_Skill_Export>();
         exportAsset.name = safeAssetName;
-        exportAsset.BuildFromTables(skillTable, skillBonusTable);
+        exportAsset.BuildFromTables(skillTable, skillLevelTable, skillBonusTable);
 
         AssetDatabase.CreateAsset(exportAsset, assetPath);
         EditorUtility.SetDirty(exportAsset);
@@ -352,8 +359,8 @@ public class SOExport : EditorWindow
     {
         exportAssetName = GetDefaultAssetName();
         selectedSkillTableIndex = FindTablePopupIndexByName(GetDefaultSkillTableName());
-        selectedSkillLevelTableIndex = FindTablePopupIndexByName(GetDefaultSkillBonusTableName());
-        selectedSkillBonusTableIndex = FindTablePopupIndexByName(GetDefaultSkillLevelTableName());
+        selectedSkillLevelTableIndex = FindTablePopupIndexByName(GetDefaultSkillLevelTableName());
+        selectedSkillBonusTableIndex = FindTablePopupIndexByName(GetDefaultSkillBonusTableName());
 
         if (selectedSkillTableIndex < 0)
         {

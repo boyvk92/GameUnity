@@ -254,7 +254,7 @@
                 {
                     "Values": [
                         "1",
-                        "Tấn công lv1",
+                        "Tấn công",
                         "Physical",
                         ""
                     ]
@@ -265,7 +265,7 @@
             "TableName": "Skill_Bounus",
             "Columns": [
                 {
-                    "Name": "ID",
+                    "Name": "Level_ID",
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
@@ -282,6 +282,13 @@
                     "Name": "Value",
                     "Description": "",
                     "Type": 0,
+                    "Role": 0,
+                    "ReferenceTableName": ""
+                },
+                {
+                    "Name": "id",
+                    "Description": "",
+                    "Type": 0,
                     "Role": 1,
                     "ReferenceTableName": ""
                 }
@@ -291,28 +298,32 @@
                     "Values": [
                         "1",
                         "MaxMana",
-                        "10"
+                        "10",
+                        "1"
                     ]
                 },
                 {
                     "Values": [
                         "1",
                         "Strength",
-                        "10"
+                        "10",
+                        "2"
                     ]
                 },
                 {
                     "Values": [
                         "2",
                         "MaxMana",
-                        "12"
+                        "12",
+                        "3"
                     ]
                 },
                 {
                     "Values": [
                         "2",
                         "MaxHealth",
-                        "12"
+                        "12",
+                        "4"
                     ]
                 }
             ]
@@ -361,7 +372,7 @@
                     "Values": [
                         "1",
                         "1",
-                        "1",
+                        "99999",
                         "100",
                         "Tấn công lv1"
                     ]
@@ -373,6 +384,15 @@
                         "2",
                         "1000",
                         "Tấn công lv2"
+                    ]
+                },
+                {
+                    "Values": [
+                        "3",
+                        "1",
+                        "2",
+                        "1",
+                        "Tấn công lv3"
                     ]
                 }
             ]
