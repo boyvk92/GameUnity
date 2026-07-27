@@ -269,7 +269,7 @@
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
-                    "ReferenceTableName": "Skill"
+                    "ReferenceTableName": "Skill_Level"
                 },
                 {
                     "Name": "Type",
@@ -284,13 +284,6 @@
                     "Type": 0,
                     "Role": 1,
                     "ReferenceTableName": ""
-                },
-                {
-                    "Name": "Level",
-                    "Description": "",
-                    "Type": 0,
-                    "Role": 0,
-                    "ReferenceTableName": ""
                 }
             ],
             "Rows": [
@@ -298,32 +291,88 @@
                     "Values": [
                         "1",
                         "MaxMana",
-                        "10",
-                        "1"
+                        "10"
                     ]
                 },
                 {
                     "Values": [
                         "1",
                         "Strength",
-                        "10",
-                        "1"
+                        "10"
                     ]
                 },
                 {
                     "Values": [
-                        "1",
+                        "2",
                         "MaxMana",
-                        "12",
-                        "2"
+                        "12"
                     ]
                 },
                 {
                     "Values": [
-                        "1",
+                        "2",
                         "MaxHealth",
-                        "12",
-                        "2"
+                        "12"
+                    ]
+                }
+            ]
+        },
+        {
+            "TableName": "Skill_Level",
+            "Columns": [
+                {
+                    "Name": "id",
+                    "Description": "",
+                    "Type": 0,
+                    "Role": 1,
+                    "ReferenceTableName": ""
+                },
+                {
+                    "Name": "Skill_Id",
+                    "Description": "",
+                    "Type": 4,
+                    "Role": 0,
+                    "ReferenceTableName": "Skill"
+                },
+                {
+                    "Name": "level",
+                    "Description": "",
+                    "Type": 1,
+                    "Role": 0,
+                    "ReferenceTableName": ""
+                },
+                {
+                    "Name": "train",
+                    "Description": "",
+                    "Type": 1,
+                    "Role": 0,
+                    "ReferenceTableName": ""
+                },
+                {
+                    "Name": "label",
+                    "Description": "",
+                    "Type": 0,
+                    "Role": 2,
+                    "ReferenceTableName": ""
+                }
+            ],
+            "Rows": [
+                {
+                    "Values": [
+                        "1",
+                        "1",
+                        "1",
+                        "100",
+                        "Tấn công lv1"
+                    ]
+                },
+                {
+                    "Values": [
+                        "2",
+                        "1",
+                        "2",
+                        "1000",
+                        "Tấn công lv2"
                     ]
                 }
             ]

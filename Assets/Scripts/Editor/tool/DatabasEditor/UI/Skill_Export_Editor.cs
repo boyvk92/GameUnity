@@ -9,7 +9,9 @@ public class SOExport : EditorWindow
 {
     private const string PrefKeyPrefix = "TuTien.DatabaseEditor.SOExport.";
     private const string PrefSelectedPreset = PrefKeyPrefix + "SelectedPreset";
+
     private const string PrefSkillState = PrefKeyPrefix + "SkillState";
+    private const string PrefSkillLevelState = PrefKeyPrefix + "SkillLevelState";
     private const string PrefSkillBonusState = PrefKeyPrefix + "SkillBonusState";
 
     private static readonly string[] PresetOptions = new[]
@@ -21,7 +23,8 @@ public class SOExport : EditorWindow
     private DatabaseExportFile database;
     private int selectedSkillTableIndex = -1;
     private int selectedSkillBonusTableIndex = -1;
-    private List<SkillColumnMapping> skillColumnMappings = new List<SkillColumnMapping>();
+    private int selectedSkillLevelTableIndex = -1;
+    
     private string exportAssetName = Path.GetFileNameWithoutExtension(DataConfig.SOExportFileName);
     private int selectedPresetIndex;
 
@@ -93,14 +96,6 @@ public class SOExport : EditorWindow
         EditorGUILayout.LabelField("Export Settings", EditorStyles.boldLabel);
 
         EditorGUI.BeginChangeCheck();
-        int previousPresetIndex = selectedPresetIndex;
-        int newPresetIndex = EditorGUILayout.Popup("Preset", selectedPresetIndex, PresetOptions);
-        if (EditorGUI.EndChangeCheck())
-        {
-            SaveCurrentPresetState(previousPresetIndex);
-            selectedPresetIndex = newPresetIndex;
-            LoadPresetState();
-        }
 
         DrawTableSelectors();
         DrawSkillColumnMappings();
@@ -129,6 +124,7 @@ public class SOExport : EditorWindow
         string[] tableNames = GetTableNames();
         selectedSkillTableIndex = DrawTablePopup("Skill Table", selectedSkillTableIndex, tableNames);
         selectedSkillBonusTableIndex = DrawTablePopup("SkillBounus Table", selectedSkillBonusTableIndex, tableNames);
+        selectedSkillLevelTableIndex = DrawTablePopup("SkillLevel Table", selectedSkillLevelTableIndex, tableNames);
     }
 
     private void DrawSkillColumnMappings()
@@ -137,37 +133,15 @@ public class SOExport : EditorWindow
         if (skillTable == null)
         {
             EditorGUILayout.HelpBox("Hay chon bang Skill de map cot.", MessageType.Info);
-            skillColumnMappings.Clear();
+
             return;
         }
 
-        EnsureSkillColumnMappings(skillTable);
         string[] fieldNames = SO_Skill_Export.GetSkillFieldNames();
 
         EditorGUILayout.Space(6);
         EditorGUILayout.BeginVertical(GUI.skin.box);
-        EditorGUILayout.LabelField("Skill Field Mapping", EditorStyles.boldLabel);
 
-        for (int i = 0; i < skillTable.Columns.Count && i < skillColumnMappings.Count; i++)
-        {
-            DatabaseColumnDefinition column = skillTable.Columns[i];
-            SkillColumnMapping mapping = skillColumnMappings[i];
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(string.IsNullOrEmpty(column.Name) ? "Unnamed Column" : column.Name, GUILayout.Width(180));
-
-            int fieldIndex = FindFieldIndex(fieldNames, mapping.FieldName);
-            int newFieldIndex = EditorGUILayout.Popup(fieldIndex, fieldNames);
-            string newFieldName = newFieldIndex <= 0 ? string.Empty : fieldNames[newFieldIndex];
-
-            if (newFieldName != mapping.FieldName)
-            {
-                mapping.FieldName = newFieldName;
-                SaveCurrentPresetState();
-            }
-
-            EditorGUILayout.EndHorizontal();
-        }
 
         EditorGUILayout.EndVertical();
     }
@@ -241,7 +215,7 @@ public class SOExport : EditorWindow
 
         SO_Skill_Export exportAsset = CreateInstance<SO_Skill_Export>();
         exportAsset.name = safeAssetName;
-        exportAsset.BuildFromTables(skillTable, skillBonusTable, skillColumnMappings);
+        exportAsset.BuildFromTables(skillTable, skillBonusTable);
 
         AssetDatabase.CreateAsset(exportAsset, assetPath);
         EditorUtility.SetDirty(exportAsset);
@@ -278,6 +252,22 @@ public class SOExport : EditorWindow
         }
 
         int tableIndex = ClampTableIndex(selectedSkillBonusTableIndex, database.Tables.Count + 1);
+        if (tableIndex <= 0 || tableIndex > database.Tables.Count)
+        {
+            return null;
+        }
+
+        return database.Tables[tableIndex - 1];
+    }
+
+    private DatabaseTableData GetSelectedSkillLevelTable()
+    {
+        if (database == null || database.Tables.Count == 0)
+        {
+            return null;
+        }
+
+        int tableIndex = ClampTableIndex(selectedSkillLevelTableIndex, database.Tables.Count + 1);
         if (tableIndex <= 0 || tableIndex > database.Tables.Count)
         {
             return null;
@@ -362,11 +352,17 @@ public class SOExport : EditorWindow
     {
         exportAssetName = GetDefaultAssetName();
         selectedSkillTableIndex = FindTablePopupIndexByName(GetDefaultSkillTableName());
-        selectedSkillBonusTableIndex = FindTablePopupIndexByName(GetDefaultSkillBonusTableName());
+        selectedSkillLevelTableIndex = FindTablePopupIndexByName(GetDefaultSkillBonusTableName());
+        selectedSkillBonusTableIndex = FindTablePopupIndexByName(GetDefaultSkillLevelTableName());
 
         if (selectedSkillTableIndex < 0)
         {
             selectedSkillTableIndex = 0;
+        }
+
+        if (selectedSkillLevelTableIndex < 0)
+        {
+            selectedSkillLevelTableIndex = 0;
         }
 
         if (selectedSkillBonusTableIndex < 0)
@@ -374,13 +370,14 @@ public class SOExport : EditorWindow
             selectedSkillBonusTableIndex = 0;
         }
 
-        EnsureSkillColumnMappings(GetSelectedSkillTable());
+        
     }
 
     private void ApplyPresetState(SOExportPresetState state)
     {
         exportAssetName = string.IsNullOrEmpty(state.AssetName) ? GetDefaultAssetName() : state.AssetName;
         selectedSkillTableIndex = FindTablePopupIndexByName(state.SkillTableName);
+        selectedSkillLevelTableIndex = FindTablePopupIndexByName(state.SkillLevelTableName);
         selectedSkillBonusTableIndex = FindTablePopupIndexByName(state.SkillBonusTableName);
 
         if (selectedSkillTableIndex < 0)
@@ -388,13 +385,15 @@ public class SOExport : EditorWindow
             selectedSkillTableIndex = 0;
         }
 
+        if (selectedSkillLevelTableIndex < 0)
+        {
+            selectedSkillLevelTableIndex = 0;
+        }
+
         if (selectedSkillBonusTableIndex < 0)
         {
             selectedSkillBonusTableIndex = 0;
         }
-
-        skillColumnMappings = CopyMappings(state.SkillColumnMappings);
-        EnsureSkillColumnMappings(GetSelectedSkillTable());
     }
 
     private void SaveCurrentPresetState()
@@ -407,8 +406,8 @@ public class SOExport : EditorWindow
         SOExportPresetState state = new SOExportPresetState();
         state.AssetName = exportAssetName;
         state.SkillTableName = GetSelectedTableName(selectedSkillTableIndex);
+        state.SkillLevelTableName = GetSelectedTableName(selectedSkillLevelTableIndex);
         state.SkillBonusTableName = GetSelectedTableName(selectedSkillBonusTableIndex);
-        state.SkillColumnMappings = CopyMappings(skillColumnMappings);
 
         EditorPrefs.SetString(GetPresetStateKey(presetIndex), JsonUtility.ToJson(state));
         EditorPrefs.SetInt(PrefSelectedPreset, presetIndex);
@@ -478,6 +477,8 @@ public class SOExport : EditorWindow
         return presetIndex == 0 ? PrefSkillState : PrefSkillBonusState;
     }
 
+    
+
     private string GetDefaultAssetName()
     {
         return PresetOptions[Mathf.Clamp(selectedPresetIndex, 0, PresetOptions.Length - 1)];
@@ -493,43 +494,11 @@ public class SOExport : EditorWindow
         return string.Empty;
     }
 
-    private void EnsureSkillColumnMappings(DatabaseTableData skillTable)
+    private string GetDefaultSkillLevelTableName()
     {
-        if (skillTable == null)
-        {
-            skillColumnMappings.Clear();
-            return;
-        }
-
-        Dictionary<string, string> existingMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        for (int i = 0; i < skillColumnMappings.Count; i++)
-        {
-            SkillColumnMapping mapping = skillColumnMappings[i];
-            if (mapping != null && !string.IsNullOrEmpty(mapping.ColumnName) && !existingMappings.ContainsKey(mapping.ColumnName))
-            {
-                existingMappings.Add(mapping.ColumnName, mapping.FieldName);
-            }
-        }
-
-        skillColumnMappings.Clear();
-
-        for (int i = 0; i < skillTable.Columns.Count; i++)
-        {
-            DatabaseColumnDefinition column = skillTable.Columns[i];
-            string fieldName;
-
-            if (!existingMappings.TryGetValue(column.Name, out fieldName))
-            {
-                fieldName = GetDefaultFieldNameForColumn(column.Name);
-            }
-
-            skillColumnMappings.Add(new SkillColumnMapping
-            {
-                ColumnName = column.Name,
-                FieldName = fieldName
-            });
-        }
+        return string.Empty;
     }
+
 
     private string GetDefaultFieldNameForColumn(string columnName)
     {
@@ -562,32 +531,6 @@ public class SOExport : EditorWindow
 
         return 0;
     }
-
-    private List<SkillColumnMapping> CopyMappings(List<SkillColumnMapping> source)
-    {
-        List<SkillColumnMapping> result = new List<SkillColumnMapping>();
-        if (source == null)
-        {
-            return result;
-        }
-
-        for (int i = 0; i < source.Count; i++)
-        {
-            SkillColumnMapping mapping = source[i];
-            if (mapping == null)
-            {
-                continue;
-            }
-
-            result.Add(new SkillColumnMapping
-            {
-                ColumnName = mapping.ColumnName,
-                FieldName = mapping.FieldName
-            });
-        }
-
-        return result;
-    }
 }
 
 [Serializable]
@@ -595,6 +538,6 @@ public class SOExportPresetState
 {
     public string AssetName;
     public string SkillTableName;
+    public string SkillLevelTableName;
     public string SkillBonusTableName;
-    public List<SkillColumnMapping> SkillColumnMappings = new List<SkillColumnMapping>();
 }

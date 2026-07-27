@@ -4,13 +4,20 @@ using System.Globalization;
 using System.Reflection;
 using UnityEngine;
 
+
+
+[Serializable]
+public class SkillLevel
+{
+    public int train;
+    public List<SkillBookBonus> bounus = new List<SkillBookBonus>();
+}
+
 [Serializable]
 public class SkillBookBonus
 {
-    public string Skill_ID;
     public string Type;
     public int Value;
-    public int Level;
 }
 
 [Serializable]
@@ -39,15 +46,10 @@ public class SO_Skill_Export : ScriptableObject
 
     public void BuildFromTable(DatabaseTableData table)
     {
-        BuildFromTable(table, null);
+        BuildFromTables(table, null);
     }
 
-    public void BuildFromTable(DatabaseTableData table, List<SkillColumnMapping> mappings)
-    {
-        BuildFromTables(table, null, mappings);
-    }
-
-    public void BuildFromTables(DatabaseTableData skillTable, DatabaseTableData skillBonusTable, List<SkillColumnMapping> mappings)
+    public void BuildFromTables(DatabaseTableData skillTable, DatabaseTableData skillBonusTable)
     {
         TableName = skillTable != null ? skillTable.TableName : string.Empty;
         Columns.Clear();
@@ -78,7 +80,7 @@ public class SO_Skill_Export : ScriptableObject
 
             for (int columnIndex = 0; columnIndex < skillTable.Columns.Count && columnIndex < row.Values.Count; columnIndex++)
             {
-                string fieldName = ResolveFieldName(skillTable.Columns[columnIndex].Name, mappings);
+                string fieldName = skillTable.Columns[columnIndex].Name;
                 SetFieldValue(skill, fieldName, row.Values[columnIndex]);
             }
 
@@ -93,8 +95,9 @@ public class SO_Skill_Export : ScriptableObject
         for (int rowIndex = 0; rowIndex < skillBonusTable.Rows.Count; rowIndex++)
         {
             DatabaseRowData row = skillBonusTable.Rows[rowIndex];
+            string bonusSkillId = GetBonusSkillId(skillBonusTable, row);
             SkillBookBonus bonus = BuildBonusFromRow(skillBonusTable, row);
-            if (bonus == null || string.IsNullOrEmpty(bonus.Skill_ID))
+            if (bonus == null || string.IsNullOrEmpty(bonusSkillId))
             {
                 continue;
             }
@@ -102,7 +105,7 @@ public class SO_Skill_Export : ScriptableObject
             for (int skillIndex = 0; skillIndex < Skills.Count; skillIndex++)
             {
                 SkillBookData skill = Skills[skillIndex];
-                if (skill != null && string.Equals(NormalizeKey(skill.id), NormalizeKey(bonus.Skill_ID), StringComparison.OrdinalIgnoreCase))
+                if (skill != null && string.Equals(NormalizeKey(skill.id), NormalizeKey(bonusSkillId), StringComparison.OrdinalIgnoreCase))
                 {
                     skill.bounus.Add(bonus);
                     break;
@@ -199,6 +202,11 @@ public class SO_Skill_Export : ScriptableObject
         }
 
         string resolvedFieldName = ResolveBonusFieldName(fieldName);
+        if (string.IsNullOrEmpty(resolvedFieldName))
+        {
+            return;
+        }
+
         FieldInfo field = typeof(SkillBookBonus).GetField(resolvedFieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
         if (field == null)
         {
@@ -218,16 +226,37 @@ public class SO_Skill_Export : ScriptableObject
 
         if (string.Equals(columnName, "ID", StringComparison.OrdinalIgnoreCase))
         {
-            return "Skill_ID";
+            return string.Empty;
         }
 
         if (string.Equals(columnName, "SkillId", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(columnName, "Skill_ID", StringComparison.OrdinalIgnoreCase))
         {
-            return "Skill_ID";
+            return string.Empty;
         }
 
         return columnName;
+    }
+
+    private string GetBonusSkillId(DatabaseTableData table, DatabaseRowData row)
+    {
+        if (table == null || row == null)
+        {
+            return string.Empty;
+        }
+
+        for (int columnIndex = 0; columnIndex < table.Columns.Count && columnIndex < row.Values.Count; columnIndex++)
+        {
+            DatabaseColumnDefinition column = table.Columns[columnIndex];
+            if (string.Equals(column.Name, "ID", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(column.Name, "Skill_ID", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(column.Name, "SkillId", StringComparison.OrdinalIgnoreCase))
+            {
+                return row.Values[columnIndex];
+            }
+        }
+
+        return string.Empty;
     }
 
     private string NormalizeKey(string value)
