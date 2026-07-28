@@ -70,7 +70,8 @@ public class SO_Skill_Export : ScriptableObject
                 Description = column.Description,
                 Type = column.Type,
                 Role = column.Role,
-                ReferenceTableName = column.ReferenceTableName
+                ReferenceTableName = column.ReferenceTableName,
+                DropdownOptions = column.DropdownOptions
             });
         }
 

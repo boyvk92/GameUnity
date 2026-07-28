@@ -204,6 +204,7 @@ public class DatabaseEditorWindow : EditorWindow
         GUILayout.Label("Type", GUILayout.Width(90));
         GUILayout.Label("Role", GUILayout.Width(110));
         GUILayout.Label("Ref Table", GUILayout.Width(140));
+        GUILayout.Label("Dropdown Options", GUILayout.Width(180));
         GUILayout.Label("", GUILayout.Width(24));
         EditorGUILayout.EndHorizontal();
 
@@ -220,6 +221,19 @@ public class DatabaseEditorWindow : EditorWindow
                 SetColumnRole(table, i, newRole);
             }
             DrawColumnReferenceTableSelector(column, GUILayout.Width(140));
+            if (column.Type == DatabaseColumnType.Dropdown)
+            {
+                string newOptions = EditorGUILayout.TextField(column.DropdownOptions, GUILayout.Width(180));
+                if (newOptions != column.DropdownOptions)
+                {
+                    column.DropdownOptions = newOptions;
+                    MarkDatabaseDirty();
+                }
+            }
+            else
+            {
+                GUILayout.Label("", GUILayout.Width(180));
+            }
             if (GUILayout.Button("X", GUILayout.Width(24)))
             {
                 if (EditorUtility.DisplayDialog("Confirm Delete", $"Delete column \"{column.Name}\"?", "Delete", "Cancel"))
@@ -392,9 +406,28 @@ public class DatabaseEditorWindow : EditorWindow
                 return boolValue.ToString();
             case DatabaseColumnType.Table:
                 return DrawTableReferenceField(currentTable, rowIndex, columnIndex, column, value, rect);
+            case DatabaseColumnType.Dropdown:
+                return DrawDropdownField(column, value, rect);
             default:
                 return EditorGUI.TextField(rect, value);
         }
+    }
+
+    private string DrawDropdownField(DatabaseColumnDefinition column, string value, Rect rect)
+    {
+        string[] options = GetDropdownOptions(column);
+        if (options.Length == 0)
+        {
+            return EditorGUI.TextField(rect, value);
+        }
+
+        string[] popupOptions = new string[options.Length + 1];
+        popupOptions[0] = "<Select>";
+        Array.Copy(options, 0, popupOptions, 1, options.Length);
+
+        int currentIndex = Array.IndexOf(options, value);
+        int newIndex = EditorGUI.Popup(rect, currentIndex < 0 ? 0 : currentIndex + 1, popupOptions);
+        return newIndex <= 0 ? string.Empty : popupOptions[newIndex];
     }
 
     private void DrawColumnReferenceTableSelector(DatabaseColumnDefinition column, GUILayoutOption widthOption)
@@ -578,7 +611,8 @@ public class DatabaseEditorWindow : EditorWindow
             "Int",
             "Float",
             "Bool",
-            "Table"
+            "Table",
+            "Dropdown"
         };
 
         int selectedIndex = (int)currentType;
@@ -748,7 +782,8 @@ public class DatabaseEditorWindow : EditorWindow
                     Description = column.Description,
                     Type = column.Type,
                     Role = column.Role,
-                    ReferenceTableName = column.ReferenceTableName
+                    ReferenceTableName = column.ReferenceTableName,
+                    DropdownOptions = column.DropdownOptions
                 });
             }
 
@@ -803,7 +838,8 @@ public class DatabaseEditorWindow : EditorWindow
                 Description = column.Description,
                 Type = column.Type,
                 Role = column.Role,
-                ReferenceTableName = column.ReferenceTableName
+                ReferenceTableName = column.ReferenceTableName,
+                DropdownOptions = column.DropdownOptions
             });
         }
 
@@ -902,6 +938,22 @@ public class DatabaseEditorWindow : EditorWindow
         }
 
         return fileName.Trim();
+    }
+
+    private string[] GetDropdownOptions(DatabaseColumnDefinition column)
+    {
+        if (column == null || string.IsNullOrEmpty(column.DropdownOptions))
+        {
+            return Array.Empty<string>();
+        }
+
+        string[] rawOptions = column.DropdownOptions.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < rawOptions.Length; i++)
+        {
+            rawOptions[i] = rawOptions[i].Trim();
+        }
+
+        return rawOptions;
     }
 }
 

@@ -9,56 +9,64 @@
                     "Description": "",
                     "Type": 0,
                     "Role": 1,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "AgeStart",
                     "Description": "Tuổi cộng thêm",
                     "Type": 1,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "ExpStart",
                     "Description": "Kinh nghiệm bắt đầu",
                     "Type": 1,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "StartSpeedBonus",
                     "Description": "tốc độ bắt đầu",
                     "Type": 2,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "NextSpeedBonus",
                     "Description": "tốc độ cấp tiếp theo",
                     "Type": 2,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "NextExp",
                     "Description": "hệ số exp cần để lên cấp",
                     "Type": 2,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "LevelUpRate",
                     "Description": "tỷ lệ lên cấp thành công",
                     "Type": 2,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "LevelUpFailRate",
                     "Description": "tăng tỷ lệ lên cấp nếu thất bại",
                     "Type": 2,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 }
             ],
             "Rows": [
@@ -96,14 +104,16 @@
                     "Description": "enum",
                     "Type": 0,
                     "Role": 1,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "name",
                     "Description": "",
                     "Type": 0,
                     "Role": 2,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 }
             ],
             "Rows": [
@@ -135,21 +145,24 @@
                     "Description": "eNum",
                     "Type": 0,
                     "Role": 1,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "description",
                     "Description": "",
                     "Type": 0,
                     "Role": 2,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "StatType",
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
-                    "ReferenceTableName": "Skill_Type"
+                    "ReferenceTableName": "Skill_Type",
+                    "DropdownOptions": ""
                 }
             ],
             "Rows": [
@@ -226,28 +239,32 @@
                     "Description": "",
                     "Type": 0,
                     "Role": 1,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "Name",
                     "Description": "",
                     "Type": 0,
                     "Role": 2,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "Type",
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
-                    "ReferenceTableName": "Skill_Type"
+                    "ReferenceTableName": "Skill_Type",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "Icon",
                     "Description": "",
                     "Type": 0,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 }
             ],
             "Rows": [
@@ -269,28 +286,32 @@
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
-                    "ReferenceTableName": "Skill_Level"
+                    "ReferenceTableName": "Skill_Level",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "Type",
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
-                    "ReferenceTableName": "StatTypeStatType"
+                    "ReferenceTableName": "StatTypeStatType",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "Value",
                     "Description": "",
                     "Type": 0,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "id",
                     "Description": "",
                     "Type": 0,
                     "Role": 1,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 }
             ],
             "Rows": [
@@ -336,35 +357,40 @@
                     "Description": "",
                     "Type": 0,
                     "Role": 1,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "Skill_Id",
                     "Description": "",
                     "Type": 4,
                     "Role": 0,
-                    "ReferenceTableName": "Skill"
+                    "ReferenceTableName": "Skill",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "level",
                     "Description": "",
                     "Type": 1,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "train",
                     "Description": "",
                     "Type": 1,
                     "Role": 0,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 },
                 {
                     "Name": "label",
                     "Description": "",
                     "Type": 0,
                     "Role": 2,
-                    "ReferenceTableName": ""
+                    "ReferenceTableName": "",
+                    "DropdownOptions": ""
                 }
             ],
             "Rows": [

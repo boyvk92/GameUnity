@@ -9,7 +9,8 @@ public enum DatabaseColumnType
     Int,
     Float,
     Bool,
-    Table
+    Table,
+    Dropdown
 }
 
 [Serializable]
@@ -28,6 +29,7 @@ public class DatabaseColumnDefinition
     public DatabaseColumnType Type = DatabaseColumnType.String;
     public DatabaseColumnRole Role = DatabaseColumnRole.Normal;
     public string ReferenceTableName = "";
+    public string DropdownOptions = "";
 }
 
 [Serializable]
